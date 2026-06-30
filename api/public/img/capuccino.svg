@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="180" viewBox="0 0 260 180">
+  <rect width="260" height="180" fill="#f6efe8"/>
+  <path d="M95 70 h70 v30 a35 35 0 0 1 -70 0 z" fill="#8d6e63"/>
+  <path d="M100 66 h60 v22 h-60 z" fill="#d7ccc8"/>
+  <path d="M165 78 q18 4 14 20 q-4 16 -18 10" fill="none" stroke="#8d6e63" stroke-width="6" stroke-linecap="round"/>
+  <text x="130" y="155" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#5d4037">Capuccino</text>
+</svg>

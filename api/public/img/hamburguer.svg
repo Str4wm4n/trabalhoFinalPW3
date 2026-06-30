@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="180" viewBox="0 0 260 180">
+  <rect width="260" height="180" fill="#fff5e6"/>
+  <path d="M80 95 q50 -55 100 0" fill="#c68642" stroke="#8a5a2b" stroke-width="4"/>
+  <rect x="84" y="94" width="92" height="10" rx="5" fill="#7cb342"/>
+  <rect x="86" y="104" width="88" height="14" rx="7" fill="#d84315"/>
+  <rect x="82" y="118" width="96" height="12" rx="6" fill="#f4d06f"/>
+  <path d="M95 88 h70" stroke="#f9e79f" stroke-width="5" stroke-linecap="round"/>
+  <text x="130" y="155" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#8b5e34">Hambúrguer</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="180" viewBox="0 0 260 180">
+  <rect width="260" height="180" fill="#fff8e1"/>
+  <rect x="100" y="50" width="60" height="90" rx="8" fill="#ffe082"/>
+  <rect x="100" y="50" width="60" height="20" rx="8" fill="#ffa000"/>
+  <ellipse cx="130" cy="70" rx="30" ry="8" fill="#ff8f00"/>
+  <line x1="130" y1="30" x2="130" y2="50" stroke="#8bc34a" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="130" cy="28" rx="10" ry="6" fill="#8bc34a"/>
+  <text x="130" y="160" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#e65100">Suco de Laranja</text>
+</svg>

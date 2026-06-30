@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="180" viewBox="0 0 260 180">
+  <rect width="260" height="180" fill="#fef9e7"/>
+  <rect x="60" y="75" width="140" height="50" rx="8" fill="#f0d080"/>
+  <rect x="60" y="68" width="140" height="18" rx="8" fill="#c8a84b"/>
+  <rect x="70" y="90" width="120" height="8" fill="#8bc34a" opacity="0.7"/>
+  <rect x="70" y="101" width="120" height="8" fill="#ef9a9a" opacity="0.7"/>
+  <rect x="60" y="110" width="140" height="18" rx="8" fill="#c8a84b"/>
+  <text x="130" y="155" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#7d6608">Sanduíche Natural</text>
+</svg>

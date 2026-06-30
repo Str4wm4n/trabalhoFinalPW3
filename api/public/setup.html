@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup do Painel Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f4f7fb;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            background: #c3e6cb;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .info {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Setup do Painel Administrativo</h1>
+        <div id="output"></div>
+        <button onclick="setupAdmin()">Criar Usuário Admin</button>
+        <button onclick="window.location.href='http://localhost/api/public/admin/login'">Ir para Login</button>
+    </div>
+
+    <script>
+        async function setupAdmin() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="status">Criando usuário admin...</div>';
+
+            try {
+                const response = await fetch('setup_process.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'create_admin' })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    output.innerHTML = `
+                        <div class="status">
+                            <strong>✓ Sucesso!</strong><br><br>
+                            Usuário admin criado com sucesso!<br><br>
+                            <strong>E-mail:</strong> admin@admin.com<br>
+                            <strong>Senha:</strong> admin123<br><br>
+                            <strong>Importante:</strong> Altere a senha após fazer o primeiro login!
+                        </div>
+                    `;
+                } else {
+                    output.innerHTML = `<div class="status error"><strong>Erro:</strong> ${result.message}</div>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="status error"><strong>Erro:</strong> ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{
+    "produtos": [
+        {
+            "nome": "Café Expresso",
+            "descricao": "Café fresco e encorpado, servido quente.",
+            "categoria": "Bebidas",
+            "preco": "5.90",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/cafe.jpeg",
+            "id": 1,
+            "stock_atual": 98,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Sanduíche Natural",
+            "descricao": "Pão integral com peito de frango e salada.",
+            "categoria": "Lanches",
+            "preco": "18.50",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/sanduiche.jpeg",
+            "id": 2,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Suco de Laranja",
+            "descricao": "Suco natural de laranja espremido na hora.",
+            "categoria": "Bebidas",
+            "preco": "7.20",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/suco.jpeg",
+            "id": 3,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Pastel",
+            "descricao": "Pastel crocante com recheio saboroso.",
+            "categoria": "Lanches",
+            "preco": "9.50",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/pastel.jpeg",
+            "id": 4,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Pizza",
+            "descricao": "Pizza artesanal com massa leve e recheio caprichado.",
+            "categoria": "Pratos",
+            "preco": "34.90",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/pizza.jpeg",
+            "id": 5,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Refrigerante",
+            "descricao": "Bebida gelada para acompanhar seu pedido.",
+            "categoria": "Bebidas",
+            "preco": "6.00",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/refrigerante.jpeg",
+            "id": 6,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Torrada",
+            "descricao": "Torrada dourada e leve para um lanche rápido.",
+            "categoria": "Lanches",
+            "preco": "8.00",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/torrada.jpeg",
+            "id": 7,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Capuccino",
+            "descricao": "Capuccino cremoso com sabor suave e marcante.",
+            "categoria": "Bebidas",
+            "preco": "9.90",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/capuccino.jpeg",
+            "id": 8,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Croissant",
+            "descricao": "Croissant folhado, macio por dentro e crocante por fora.",
+            "categoria": "Lanches",
+            "preco": "11.50",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/croissant.jpeg",
+            "id": 9,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Hambúrguer",
+            "descricao": "Hambúrguer artesanal com molho e ingredientes frescos.",
+            "categoria": "Lanches",
+            "preco": "22.90",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/hamburguer.jpeg",
+            "id": 10,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Hot Dog",
+            "descricao": "Cachorro-quente clássico com molho especial.",
+            "categoria": "Lanches",
+            "preco": "16.00",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/hotdog.jpeg",
+            "id": 11,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        },
+        {
+            "nome": "Misto Quente",
+            "descricao": "Sanduíche simples, quentinho e muito saboroso.",
+            "categoria": "Lanches",
+            "preco": "12.50",
+            "imagem": "http:\/\/localhost\/api\/public\/img\/misto-quente.jpeg",
+            "id": 12,
+            "stock_atual": 99,
+            "quantidade": 0,
+            "disponivel": true
+        }
+    ]
+}

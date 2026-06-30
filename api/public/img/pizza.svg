@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="180" viewBox="0 0 260 180">
+  <rect width="260" height="180" fill="#fff5ea"/>
+  <path d="M65 115 L130 50 L195 115 Z" fill="#ffd180" stroke="#e0a85a" stroke-width="4"/>
+  <circle cx="120" cy="88" r="9" fill="#d84315"/>
+  <circle cx="145" cy="96" r="9" fill="#d84315"/>
+  <circle cx="132" cy="72" r="9" fill="#2e7d32"/>
+  <text x="130" y="155" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#9a5c12">Pizza</text>
+</svg>
