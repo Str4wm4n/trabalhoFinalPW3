@@ -259,8 +259,8 @@
                         <strong id="totalItens">0</strong>
                     </div>
                     <div class="box">
-                        <span>Mesa destaque</span>
-                        <strong id="mesaDestaque">-</strong>
+                        <span>Totem destaque</span>
+                        <strong id="totemDestaque">-</strong>
                     </div>
                 </div>
                 <div class="table-wrap">
@@ -268,7 +268,7 @@
                         <thead>
                             <tr>
                                 <th>Pedido</th>
-                                <th>Mesa</th>
+                                <th>Totem</th>
                                 <th>Data</th>
                                 <th>Valor total</th>
                                 <th>Status</th>
@@ -344,7 +344,7 @@
             tbody.innerHTML = linhas.map((linha) => `
                 <tr>
                     <td>#${linha.pedido_id}</td>
-                    <td>${linha.mesa_numero || '-'}</td>
+                    <td>${linha.totem_numero || linha.mesa_numero || '-'}</td>
                     <td>${linha.data}</td>
                     <td class="money">${formatMoney(linha.valor_total)}</td>
                     <td><span class="status ${linha.status || 'novo'}">${(linha.status || 'novo').toUpperCase()}</span></td>
@@ -428,7 +428,8 @@
                 document.getElementById('totalVendido').textContent = formatMoney(data.meta?.total_vendido || 0);
                 document.getElementById('totalPedidos').textContent = data.meta?.pedidos || 0;
                 document.getElementById('totalItens').textContent = data.meta?.itens_vendidos || 0;
-                document.getElementById('mesaDestaque').textContent = data.meta?.mesa_lider ? `Mesa ${data.meta.mesa_lider}` : '-';
+                const totemLider = data.meta?.totem_lider || data.meta?.mesa_lider;
+                document.getElementById('totemDestaque').textContent = totemLider ? `Totem ${totemLider}` : '-';
                 document.getElementById('periodoLabel').textContent = data.meta?.periodo || '';
 
                 renderPagination();

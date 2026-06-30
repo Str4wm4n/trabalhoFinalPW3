@@ -40,7 +40,7 @@
                 <div class="pedido-card">
                     <div>
                         <strong>Pedido #${p.id}</strong><br>
-                        <small>Mesa ${p.mesa_numero || '-'}</small><br>
+                        <small>Totem ${p.mesa_numero || '-'}</small><br>
                         <span class="status-${p.status}">Status: ${p.status.toUpperCase()}</span><br>
                         <small>Data: ${new Date(p.created_at).toLocaleString('pt-BR')}</small>
                     </div>

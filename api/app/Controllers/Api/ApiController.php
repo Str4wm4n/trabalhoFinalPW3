@@ -60,9 +60,12 @@ class ApiController extends BaseController
             return $this->failValidationErrors('Pedido inválido.');
         }
 
-        $mesaNumero = isset($dados['mesa_numero']) ? (int) $dados['mesa_numero'] : 0;
-        if ($mesaNumero < 1 || $mesaNumero > 9) {
-            return $this->failValidationErrors('Mesa inválida. Informe uma mesa entre 1 e 9.');
+        $totemNumero = isset($dados['totem_numero'])
+            ? (int) $dados['totem_numero']
+            : (isset($dados['mesa_numero']) ? (int) $dados['mesa_numero'] : 0);
+
+        if ($totemNumero < 1) {
+            return $this->failValidationErrors('Totem invalido. Informe um identificador de totem valido.');
         }
 
         try {
@@ -75,7 +78,7 @@ class ApiController extends BaseController
             $db->transStart();
             $idPedido = $pedidoModel->insert([
                 'status' => 'novo',
-                'mesa_numero' => $mesaNumero,
+                'mesa_numero' => $totemNumero,
             ]);
 
             if (!$idPedido) {
@@ -130,7 +133,8 @@ class ApiController extends BaseController
             return $this->respondCreated([
                 'status'    => true,
                 'id_pedido' => $idPedido,
-                'mesa_numero' => $mesaNumero,
+                'totem_numero' => $totemNumero,
+                'mesa_numero' => $totemNumero,
             ]);
         } catch (\Throwable $e) {
             return $this->failServerError($e->getMessage());

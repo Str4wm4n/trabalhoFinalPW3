@@ -39,7 +39,7 @@
 
             content.innerHTML = `
                 <h2>Pedido #${pedido.id}</h2>
-                <p><strong>Mesa:</strong> ${pedido.mesa_numero || '-'}</p>
+                <p><strong>Totem:</strong> ${pedido.mesa_numero || '-'}</p>
                 <p><strong>Status Atual:</strong> ${pedido.status.toUpperCase()}</p>
                 <table>
                     <thead>

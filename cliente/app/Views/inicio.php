@@ -56,27 +56,32 @@
             color: #666666;
             max-width: 440px;
         }
-        .mesa-select {
+        .totem-box {
             margin: 0 auto 22px;
             max-width: 320px;
             text-align: left;
+            background: #fafafa;
+            border: 1px solid #e9e9e9;
+            border-radius: 14px;
+            padding: 14px;
         }
-        .mesa-select label {
+        .totem-box label {
             display: block;
             margin-bottom: 8px;
             font-size: 0.9rem;
             font-weight: 700;
             color: #333333;
         }
-        .mesa-select select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid #d8d8d8;
-            background: #ffffff;
-            font-size: 1rem;
+        .totem-value {
+            display: inline-block;
+            background: #111111;
+            color: #ffffff;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 0.92rem;
+            font-weight: 700;
         }
-        .mesa-help {
+        .totem-help {
             margin-top: 8px;
             font-size: 0.85rem;
             color: #666666;
@@ -139,49 +144,36 @@
             <h1>Seu pedido começa aqui</h1>
             <p class="lead">Escolha um produto, monte o carrinho e finalize em poucos cliques.</p>
 
-            <div class="mesa-select">
-                <label for="mesaNumero">Identificação do mesa</label>
-                <select id="mesaNumero" required>
-                    <option value="">Selecione a mesa</option>
-                    <option value="1">Mesa 1</option>
-                    <option value="2">Mesa 2</option>
-                    <option value="3">Mesa 3</option>
-                    <option value="4">Mesa 4</option>
-                    <option value="5">Mesa 5</option>
-                    <option value="6">Mesa 6</option>
-                    <option value="7">Mesa 7</option>
-                    <option value="8">Mesa 8</option>
-                    <option value="9">Mesa 9</option>
-                </select>
-                <div class="mesa-help">Essa mesa será vinculada ao pedido para acompanhamento no admin.</div>
+            <div class="totem-box">
+                <label>Totem deste navegador</label>
+                <div id="totemValue" class="totem-value">Gerando...</div>
+                <div class="totem-help">Cada navegador recebe um totem próprio. A janela normal e a anônima ficam com totems diferentes.</div>
             </div>
-            <button class="btn" id="startOrderBtn" type="button" disabled>Iniciar pedido</button>
+            <button class="btn" id="startOrderBtn" type="button">Iniciar pedido</button>
         </div>
     </div>
 
     <script>
-        const mesaKey = 'pedidoMesa';
-        const mesaSelect = document.getElementById('mesaNumero');
+        const totemKey = 'pedidoTotem';
+        const totemValue = document.getElementById('totemValue');
         const startOrderBtn = document.getElementById('startOrderBtn');
 
-        const mesaSalva = localStorage.getItem(mesaKey) || '';
-        if (mesaSalva) {
-            mesaSelect.value = mesaSalva;
-            startOrderBtn.disabled = false;
-        }
-
-        mesaSelect.addEventListener('change', () => {
-            startOrderBtn.disabled = !mesaSelect.value;
-        });
-
-        startOrderBtn.addEventListener('click', () => {
-            const mesa = Number(mesaSelect.value);
-            if (!mesa || mesa < 1 || mesa > 9) {
-                alert('Selecione uma mesa válida de 1 a 9.');
-                return;
+        function getOrCreateTotemNumero() {
+            const salvo = Number(localStorage.getItem(totemKey) || 0);
+            if (Number.isInteger(salvo) && salvo > 0) {
+                return salvo;
             }
 
-            localStorage.setItem(mesaKey, String(mesa));
+            const novoTotem = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem(totemKey, String(novoTotem));
+            return novoTotem;
+        }
+
+        const totemNumero = getOrCreateTotemNumero();
+        totemValue.textContent = `Totem ${totemNumero}`;
+
+        startOrderBtn.addEventListener('click', () => {
+            localStorage.setItem(totemKey, String(totemNumero));
             window.location.href = '<?= site_url('produtos') ?>';
         });
     </script>

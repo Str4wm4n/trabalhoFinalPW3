@@ -7,7 +7,7 @@
             "preco": "5.90",
             "imagem": "http:\/\/localhost\/api\/public\/img\/cafe.jpeg",
             "id": 1,
-            "stock_atual": 98,
+            "stock_atual": 97,
             "quantidade": 0,
             "disponivel": true
         },

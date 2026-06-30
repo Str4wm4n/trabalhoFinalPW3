@@ -127,8 +127,16 @@ class RelatorioController extends BaseController
                 'inicio' => $dataInicio,
                 'fim' => $dataFim,
                 'mesa_lider' => $mesasRanking[0]['mesa_numero'] ?? null,
+                'totem_lider' => $mesasRanking[0]['mesa_numero'] ?? null,
             ],
             'mesas_ranking' => $mesasRanking,
+            'totens_ranking' => array_map(static function ($row) {
+                return [
+                    'totem_numero' => $row['mesa_numero'],
+                    'total_pedidos' => $row['total_pedidos'],
+                    'total_vendas' => $row['total_vendas'],
+                ];
+            }, $mesasRanking),
             'linhas' => array_map(static function ($row) {
                 return [
                     'pedido_id' => (int) $row['pedido_id'],
@@ -137,6 +145,7 @@ class RelatorioController extends BaseController
                     'itens' => (int) $row['total_itens'],
                     'status' => $row['status'] ?? 'novo',
                     'mesa_numero' => isset($row['mesa_numero']) ? (int) $row['mesa_numero'] : null,
+                    'totem_numero' => isset($row['mesa_numero']) ? (int) $row['mesa_numero'] : null,
                 ];
             }, $rows),
         ], 200);

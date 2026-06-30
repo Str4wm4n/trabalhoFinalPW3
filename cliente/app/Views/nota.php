@@ -68,7 +68,7 @@
             content.innerHTML = `
                 <div class="order-meta">
                     <span>Pedido: ${pedido.id_pedido}</span>
-                    <span>Mesa: ${pedido.mesa_numero || 'Não informada'}</span>
+                    <span>Totem: ${pedido.totem_numero || pedido.mesa_numero || 'Nao informado'}</span>
                     <span>Cliente: ${pedido.cliente || 'Não informado'}</span>
                     <span>Contato: ${pedido.contato || 'Não informado'}</span>
                 </div>

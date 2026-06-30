@@ -41,7 +41,7 @@
     <main class="page">
         <div class="box">
             <h2>Resumo do pedido</h2>
-            <div id="mesaBadge" class="mesa-badge"></div>
+            <div id="totemBadge" class="mesa-badge"></div>
             <div id="checkoutContent"></div>
             <form id="checkoutForm">
                 <div class="field">
@@ -61,7 +61,7 @@
     <script>
         const cartKey = 'pedidoCart';
         const lastOrderKey = 'pedidoLastOrder';
-        const mesaKey = 'pedidoMesa';
+        const totemKey = 'pedidoTotem';
 
         function getCart() {
             try {
@@ -79,12 +79,15 @@
             localStorage.removeItem(cartKey);
         }
 
-        function getMesaNumero() {
-            const mesa = Number(localStorage.getItem(mesaKey) || 0);
-            if (mesa >= 1 && mesa <= 9) {
-                return mesa;
+        function getOrCreateTotemNumero() {
+            const totem = Number(localStorage.getItem(totemKey) || 0);
+            if (Number.isInteger(totem) && totem > 0) {
+                return totem;
             }
-            return null;
+
+            const novoTotem = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem(totemKey, String(novoTotem));
+            return novoTotem;
         }
 
         function formatMoney(value) {
@@ -94,14 +97,14 @@
         const content = document.getElementById('checkoutContent');
         const alertBox = document.getElementById('alertBox');
         const form = document.getElementById('checkoutForm');
-        const mesaBadge = document.getElementById('mesaBadge');
-        const mesaNumero = getMesaNumero();
+        const totemBadge = document.getElementById('totemBadge');
+        const totemNumero = getOrCreateTotemNumero();
 
-        if (!mesaNumero) {
-            alert('Selecione a mesa do totem antes de finalizar o pedido.');
+        if (!totemNumero) {
+            alert('Nao foi possivel identificar o totem deste navegador.');
             window.location.href = '<?= site_url('/') ?>';
         } else {
-            mesaBadge.textContent = `Totem da Mesa ${mesaNumero}`;
+            totemBadge.textContent = `Totem ${totemNumero}`;
         }
 
         function renderCheckout() {
@@ -139,7 +142,8 @@
             }
 
             const payload = {
-                mesa_numero: mesaNumero,
+                mesa_numero: totemNumero,
+                totem_numero: totemNumero,
                 produtos: cart.map(item => ({
                     id_produto: Number(item.id),
                     quantidade: Number(item.quantidade),
@@ -171,7 +175,8 @@
                 const total = cart.reduce((sum, item) => sum + item.preco * item.quantidade, 0);
                 saveLastOrder({
                     id_pedido: result.id_pedido,
-                    mesa_numero: mesaNumero,
+                    totem_numero: totemNumero,
+                    mesa_numero: totemNumero,
                     itens: cart,
                     total,
                     cliente: document.getElementById('customerName').value.trim() || 'Cliente',
