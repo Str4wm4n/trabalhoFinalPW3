@@ -12,6 +12,7 @@ $routes->get('/', function() {
 $routes->group('api', function($routes) {
     $routes->get('status', 'Api\ApiController::api_status');
     $routes->get('produtos', 'Api\ApiController::get_produtos');
+    $routes->post('produtos', 'Api\ApiController::criar_produto');
     $routes->put('produtos/(:num)', 'Api\ApiController::atualizar_produto/$1');
     $routes->post('checkout', 'Api\ApiController::checkout');
     

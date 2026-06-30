@@ -100,6 +100,7 @@
         .btn-primary { background: #4f46e5; color: white; }
         .btn-dark { background: #111827; color: white; }
         .btn-soft { background: #eef2ff; color: #3730a3; }
+        .btn-success { background: #059669; color: white; }
         .grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -251,6 +252,42 @@
             opacity: 1;
             transform: translateY(0);
         }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .form-grid .full {
+            grid-column: 1 / -1;
+        }
+        .text-area {
+            width: 100%;
+            min-height: 92px;
+            resize: vertical;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            background: white;
+        }
+        .add-panel {
+            display: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 14px;
+            background: #f9fafb;
+        }
+        .add-panel.open {
+            display: block;
+        }
+        .actions-row {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
         @media (max-width: 720px) {
             .toolbar { align-items: stretch; }
             .toolbar .filters,
@@ -291,6 +328,7 @@
             </div>
             <div class="quick-actions">
                 <button class="btn btn-dark" onclick="loadProducts()">Atualizar</button>
+                <button class="btn btn-success" onclick="toggleAddPanel()">Adicionar produto</button>
                 <button class="btn btn-soft" onclick="showOnlyAvailable()">Só disponíveis</button>
             </div>
         </div>
@@ -299,6 +337,25 @@
             <div class="card">
                 <h2>Catálogo com estoque editável</h2>
                 <p class="subtitle">Altere o stock atual e a quantidade diretamente na tabela. A disponibilidade só fica ativa quando o stock atual for maior que zero.</p>
+                <div id="addProductPanel" class="add-panel">
+                    <h3 style="margin:0 0 8px;">Novo produto</h3>
+                    <p class="subtitle" style="margin-bottom: 10px;">Preencha os mesmos campos usados no arquivo produtos.json.</p>
+                    <form id="addProductForm">
+                        <div class="form-grid">
+                            <input id="novoNome" class="field" type="text" placeholder="Nome" required>
+                            <input id="novaCategoria" class="field" type="text" placeholder="Categoria" required>
+                            <input id="novoPreco" class="field" type="number" min="0" step="0.01" placeholder="Preco" required>
+                            <input id="novoStock" class="field" type="number" min="0" step="1" placeholder="Stock atual" value="0" required>
+                            <input id="novaQuantidade" class="field" type="number" min="0" step="1" placeholder="Quantidade" value="0" required>
+                            <input id="novaImagem" class="field full" type="url" placeholder="URL da imagem" required>
+                            <textarea id="novaDescricao" class="text-area full" placeholder="Descricao" required></textarea>
+                        </div>
+                        <div class="actions-row">
+                            <button class="btn btn-primary" type="submit">Salvar novo produto</button>
+                            <button class="btn" style="background:#e5e7eb;color:#111827;" type="button" onclick="closeAddPanel()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -331,6 +388,7 @@
         let filteredData = [];
         let onlyAvailable = false;
         let currentPage = 1;
+        let addPanelOpen = false;
 
         const toast = document.getElementById('toast');
 
@@ -383,6 +441,17 @@
                 console.error(error);
                 document.getElementById('consumoTable').innerHTML = '<tr><td colspan="6" class="empty">Erro ao carregar produtos.</td></tr>';
             }
+        }
+
+        function toggleAddPanel() {
+            addPanelOpen = !addPanelOpen;
+            const panel = document.getElementById('addProductPanel');
+            panel.classList.toggle('open', addPanelOpen);
+        }
+
+        function closeAddPanel() {
+            addPanelOpen = false;
+            document.getElementById('addProductPanel').classList.remove('open');
         }
 
         function renderCategories() {
@@ -531,6 +600,50 @@
                 showToast(error.message || 'Erro ao salvar produto');
             }
         }
+
+        async function criarProduto(event) {
+            event.preventDefault();
+
+            const payload = {
+                nome: document.getElementById('novoNome').value.trim(),
+                descricao: document.getElementById('novaDescricao').value.trim(),
+                categoria: document.getElementById('novaCategoria').value.trim(),
+                preco: Number(document.getElementById('novoPreco').value || 0),
+                imagem: document.getElementById('novaImagem').value.trim(),
+                stock_atual: Number(document.getElementById('novoStock').value || 0),
+                quantidade: Number(document.getElementById('novaQuantidade').value || 0)
+            };
+
+            if (!payload.nome || !payload.descricao || !payload.categoria || !payload.imagem) {
+                showToast('Preencha todos os campos obrigatorios');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost/api/public/api/produtos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(result.messages?.error || result.message || 'Nao foi possivel criar o produto');
+                }
+
+                document.getElementById('addProductForm').reset();
+                document.getElementById('novoStock').value = '0';
+                document.getElementById('novaQuantidade').value = '0';
+                closeAddPanel();
+                showToast('Produto criado com sucesso');
+                await loadProducts();
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || 'Erro ao criar produto');
+            }
+        }
+
+        document.getElementById('addProductForm').addEventListener('submit', criarProduto);
 
         checkAuth();
         loadProducts();

@@ -52,6 +52,51 @@ class ApiController extends BaseController
         ], 200);
     }
 
+    public function criar_produto()
+    {
+        $dados = $this->request->getJSON(true) ?? [];
+
+        $nome = trim((string) ($dados['nome'] ?? ''));
+        $descricao = trim((string) ($dados['descricao'] ?? ''));
+        $categoria = trim((string) ($dados['categoria'] ?? ''));
+        $imagem = trim((string) ($dados['imagem'] ?? ''));
+        $preco = isset($dados['preco']) ? (float) $dados['preco'] : -1;
+        $stockAtual = isset($dados['stock_atual']) ? (int) $dados['stock_atual'] : 0;
+        $quantidade = isset($dados['quantidade']) ? (int) $dados['quantidade'] : 0;
+
+        if ($nome === '' || $descricao === '' || $categoria === '' || $imagem === '') {
+            return $this->failValidationErrors('Nome, descricao, categoria e imagem sao obrigatorios.');
+        }
+
+        if ($preco < 0) {
+            return $this->failValidationErrors('Preco invalido.');
+        }
+
+        if ($stockAtual < 0 || $quantidade < 0) {
+            return $this->failValidationErrors('Stock atual e quantidade nao podem ser negativos.');
+        }
+
+        $catalog = new ProdutoCatalog();
+        $novoProduto = $catalog->criarProduto([
+            'nome' => $nome,
+            'descricao' => $descricao,
+            'categoria' => $categoria,
+            'preco' => $preco,
+            'imagem' => $imagem,
+            'stock_atual' => $stockAtual,
+            'quantidade' => $quantidade,
+        ]);
+
+        if (!$novoProduto) {
+            return $this->failServerError('Nao foi possivel criar o produto.');
+        }
+
+        return $this->respondCreated([
+            'status' => true,
+            'produto' => $novoProduto,
+        ]);
+    }
+
     public function checkout()
     {
         $dados = $this->request->getJSON(true);

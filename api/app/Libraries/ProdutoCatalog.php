@@ -91,4 +91,41 @@ class ProdutoCatalog
 
         return null;
     }
+
+    public function criarProduto(array $dados): ?array
+    {
+        $produtos = $this->getProdutosFromJson();
+
+        $maiorId = 0;
+        foreach ($produtos as $produto) {
+            $idAtual = (int) ($produto['id'] ?? 0);
+            if ($idAtual > $maiorId) {
+                $maiorId = $idAtual;
+            }
+        }
+
+        $stockAtual = max(0, (int) ($dados['stock_atual'] ?? 0));
+        $quantidade = max(0, (int) ($dados['quantidade'] ?? 0));
+        $preco = isset($dados['preco']) ? number_format((float) $dados['preco'], 2, '.', '') : '0.00';
+
+        $novoProduto = [
+            'id' => $maiorId + 1,
+            'nome' => trim((string) ($dados['nome'] ?? '')),
+            'descricao' => trim((string) ($dados['descricao'] ?? '')),
+            'categoria' => trim((string) ($dados['categoria'] ?? '')),
+            'preco' => $preco,
+            'imagem' => trim((string) ($dados['imagem'] ?? '')),
+            'stock_atual' => $stockAtual,
+            'quantidade' => $quantidade,
+            'disponivel' => $stockAtual > 0,
+        ];
+
+        $produtos[] = $novoProduto;
+
+        if (!$this->salvarProdutos($produtos)) {
+            return null;
+        }
+
+        return $novoProduto;
+    }
 }
