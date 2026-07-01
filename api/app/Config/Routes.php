@@ -12,8 +12,10 @@ $routes->get('/', function() {
 $routes->group('api', function($routes) {
     $routes->get('status', 'Api\ApiController::api_status');
     $routes->get('produtos', 'Api\ApiController::get_produtos');
+    $routes->get('produtos/imagens', 'Api\ApiController::listar_imagens_produtos');
     $routes->post('produtos', 'Api\ApiController::criar_produto');
     $routes->put('produtos/(:num)', 'Api\ApiController::atualizar_produto/$1');
+    $routes->delete('produtos/(:num)', 'Api\ApiController::remover_produto/$1');
     $routes->post('checkout', 'Api\ApiController::checkout');
     
     // Novas rotas para a Cozinha

@@ -26,6 +26,47 @@ class ApiController extends BaseController
         return $this->respond($produtos, 200);
     }
 
+    public function listar_imagens_produtos()
+    {
+        $imgPath = FCPATH . 'img' . DIRECTORY_SEPARATOR;
+        if (!is_dir($imgPath)) {
+            return $this->respond([], 200);
+        }
+
+        $arquivos = scandir($imgPath);
+        if ($arquivos === false) {
+            return $this->respond([], 200);
+        }
+
+        $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
+        $imagens = [];
+
+        foreach ($arquivos as $arquivo) {
+            if ($arquivo === '.' || $arquivo === '..') {
+                continue;
+            }
+
+            $fullPath = $imgPath . $arquivo;
+            if (!is_file($fullPath)) {
+                continue;
+            }
+
+            $ext = strtolower(pathinfo($arquivo, PATHINFO_EXTENSION));
+            if (!in_array($ext, $permitidos, true)) {
+                continue;
+            }
+
+            $imagens[] = [
+                'arquivo' => $arquivo,
+                'url' => base_url('img/' . $arquivo),
+            ];
+        }
+
+        usort($imagens, static fn($a, $b) => strcmp($a['arquivo'], $b['arquivo']));
+
+        return $this->respond($imagens, 200);
+    }
+
     public function atualizar_produto($id)
     {
         $dados = $this->request->getJSON(true) ?? [];
@@ -54,15 +95,41 @@ class ApiController extends BaseController
 
     public function criar_produto()
     {
-        $dados = $this->request->getJSON(true) ?? [];
+        $dadosJson = [];
+        $contentType = strtolower($this->request->getHeaderLine('Content-Type'));
+        if (str_contains($contentType, 'application/json')) {
+            $dadosJson = $this->request->getJSON(true) ?? [];
+        }
 
-        $nome = trim((string) ($dados['nome'] ?? ''));
-        $descricao = trim((string) ($dados['descricao'] ?? ''));
-        $categoria = trim((string) ($dados['categoria'] ?? ''));
-        $imagem = trim((string) ($dados['imagem'] ?? ''));
-        $preco = isset($dados['preco']) ? (float) $dados['preco'] : -1;
-        $stockAtual = isset($dados['stock_atual']) ? (int) $dados['stock_atual'] : 0;
-        $quantidade = isset($dados['quantidade']) ? (int) $dados['quantidade'] : 0;
+        $nome = trim((string) ($this->request->getPost('nome') ?? $dadosJson['nome'] ?? ''));
+        $descricao = trim((string) ($this->request->getPost('descricao') ?? $dadosJson['descricao'] ?? ''));
+        $categoria = trim((string) ($this->request->getPost('categoria') ?? $dadosJson['categoria'] ?? ''));
+        $preco = (float) ($this->request->getPost('preco') ?? $dadosJson['preco'] ?? -1);
+        $stockAtual = (int) ($this->request->getPost('stock_atual') ?? $dadosJson['stock_atual'] ?? 0);
+        $quantidade = (int) ($this->request->getPost('quantidade') ?? $dadosJson['quantidade'] ?? 0);
+        $imagem = trim((string) ($this->request->getPost('imagem') ?? $dadosJson['imagem'] ?? ''));
+
+        $imagemArquivo = $this->request->getFile('imagem_arquivo');
+        if ($imagemArquivo && $imagemArquivo->isValid() && !$imagemArquivo->hasMoved()) {
+            $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
+            $ext = strtolower((string) $imagemArquivo->getExtension());
+
+            if (!in_array($ext, $permitidos, true)) {
+                return $this->failValidationErrors('Formato de imagem nao suportado.');
+            }
+
+            $imgDir = FCPATH . 'img' . DIRECTORY_SEPARATOR;
+            if (!is_dir($imgDir) && !mkdir($imgDir, 0775, true) && !is_dir($imgDir)) {
+                return $this->failServerError('Nao foi possivel preparar a pasta de imagens.');
+            }
+
+            $novoNome = $imagemArquivo->getRandomName();
+            if (!$imagemArquivo->move($imgDir, $novoNome)) {
+                return $this->failServerError('Nao foi possivel salvar a imagem enviada.');
+            }
+
+            $imagem = base_url('img/' . $novoNome);
+        }
 
         if ($nome === '' || $descricao === '' || $categoria === '' || $imagem === '') {
             return $this->failValidationErrors('Nome, descricao, categoria e imagem sao obrigatorios.');
@@ -95,6 +162,26 @@ class ApiController extends BaseController
             'status' => true,
             'produto' => $novoProduto,
         ]);
+    }
+
+    public function remover_produto($id)
+    {
+        $catalog = new ProdutoCatalog();
+        $idProduto = (int) $id;
+
+        if ($idProduto <= 0) {
+            return $this->failValidationErrors('Produto invalido.');
+        }
+
+        $removido = $catalog->removerProduto($idProduto);
+        if (!$removido) {
+            return $this->failNotFound('Produto nao encontrado para remocao.');
+        }
+
+        return $this->respond([
+            'status' => true,
+            'message' => 'Produto removido do cardapio com sucesso.',
+        ], 200);
     }
 
     public function checkout()

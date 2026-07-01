@@ -194,6 +194,20 @@
             cursor: pointer;
             font-weight: 700;
         }
+        .btn-remove {
+            background: #b91c1c;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .actions-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
         .small {
             color: #6b7280;
             font-size: 0.9rem;
@@ -288,6 +302,14 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+        .image-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            object-fit: cover;
+            background: #ffffff;
+        }
         @media (max-width: 720px) {
             .toolbar { align-items: stretch; }
             .toolbar .filters,
@@ -343,11 +365,20 @@
                     <form id="addProductForm">
                         <div class="form-grid">
                             <input id="novoNome" class="field" type="text" placeholder="Nome" required>
-                            <input id="novaCategoria" class="field" type="text" placeholder="Categoria" required>
+                            <select id="novaCategoria" class="select" required>
+                                <option value="">Selecione a categoria</option>
+                                <option value="Lanches">Lanches</option>
+                                <option value="Bebidas">Bebidas</option>
+                                <option value="Pratos">Pratos</option>
+                            </select>
                             <input id="novoPreco" class="field" type="number" min="0" step="0.01" placeholder="Preco" required>
                             <input id="novoStock" class="field" type="number" min="0" step="1" placeholder="Stock atual" value="0" required>
                             <input id="novaQuantidade" class="field" type="number" min="0" step="1" placeholder="Quantidade" value="0" required>
-                            <input id="novaImagem" class="field full" type="url" placeholder="URL da imagem" required>
+                            <input id="novaImagem" class="field full" type="file" accept="image/*" required onchange="previewImagemSelecionada()">
+                            <div class="full">
+                                <img id="previewNovaImagem" class="image-preview" alt="Preview da imagem" src="https://via.placeholder.com/120x120?text=IMG">
+                            </div>
+                            <div class="small full">Selecione uma imagem do seu computador (Downloads, Desktop ou outra pasta).</div>
                             <textarea id="novaDescricao" class="text-area full" placeholder="Descricao" required></textarea>
                         </div>
                         <div class="actions-row">
@@ -560,7 +591,12 @@
                         <td><span class="status ${statusClass}">${statusText}</span></td>
                         <td><input class="num-input" type="number" min="0" value="${Number(item.stock_atual || 0)}" data-field="stock" data-id="${item.id}"></td>
                         <td><input class="num-input" type="number" min="0" value="${Number(item.quantidade || 0)}" data-field="quantidade" data-id="${item.id}"></td>
-                        <td><button class="btn-save" onclick="salvarProduto(${item.id})">Salvar</button></td>
+                        <td>
+                            <div class="actions-buttons">
+                                <button class="btn-save" onclick="salvarProduto(${item.id})">Salvar</button>
+                                <button class="btn-remove" onclick="removerProduto(${item.id}, '${(item.nome || '').replace(/'/g, "\\'")}')">Retirar</button>
+                            </div>
+                        </td>
                     </tr>
                 `;
             }).join('');
@@ -601,29 +637,83 @@
             }
         }
 
+        async function removerProduto(id, nome) {
+            const nomeProduto = nome || `#${id}`;
+            const confirmar = confirm(`Deseja retirar "${nomeProduto}" do cardapio?`);
+            if (!confirmar) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost/api/public/api/produtos/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(result.messages?.error || result.message || 'Nao foi possivel remover o produto');
+                }
+
+                showToast('Produto retirado do cardapio');
+                await loadProducts();
+            } catch (error) {
+                console.error(error);
+                showToast(error.message || 'Erro ao remover produto');
+            }
+        }
+
+        function previewImagemSelecionada() {
+            const imagemInput = document.getElementById('novaImagem');
+            const preview = document.getElementById('previewNovaImagem');
+            const arquivo = imagemInput.files && imagemInput.files[0] ? imagemInput.files[0] : null;
+
+            if (!arquivo) {
+                preview.src = 'https://via.placeholder.com/120x120?text=IMG';
+                return;
+            }
+
+            preview.src = URL.createObjectURL(arquivo);
+        }
+
         async function criarProduto(event) {
             event.preventDefault();
+
+            const imagemInput = document.getElementById('novaImagem');
+            const arquivoImagem = imagemInput.files && imagemInput.files[0] ? imagemInput.files[0] : null;
+
+            if (!arquivoImagem) {
+                showToast('Selecione uma imagem do seu computador');
+                return;
+            }
 
             const payload = {
                 nome: document.getElementById('novoNome').value.trim(),
                 descricao: document.getElementById('novaDescricao').value.trim(),
                 categoria: document.getElementById('novaCategoria').value.trim(),
                 preco: Number(document.getElementById('novoPreco').value || 0),
-                imagem: document.getElementById('novaImagem').value.trim(),
                 stock_atual: Number(document.getElementById('novoStock').value || 0),
                 quantidade: Number(document.getElementById('novaQuantidade').value || 0)
             };
 
-            if (!payload.nome || !payload.descricao || !payload.categoria || !payload.imagem) {
+            if (!payload.nome || !payload.descricao || !payload.categoria) {
                 showToast('Preencha todos os campos obrigatorios');
                 return;
             }
 
+            const formData = new FormData();
+            formData.append('nome', payload.nome);
+            formData.append('descricao', payload.descricao);
+            formData.append('categoria', payload.categoria);
+            formData.append('preco', String(payload.preco));
+            formData.append('stock_atual', String(payload.stock_atual));
+            formData.append('quantidade', String(payload.quantidade));
+            formData.append('imagem_arquivo', arquivoImagem);
+
             try {
                 const response = await fetch('http://localhost/api/public/api/produtos', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: formData
                 });
 
                 const result = await response.json().catch(() => ({}));
@@ -634,6 +724,7 @@
                 document.getElementById('addProductForm').reset();
                 document.getElementById('novoStock').value = '0';
                 document.getElementById('novaQuantidade').value = '0';
+                previewImagemSelecionada();
                 closeAddPanel();
                 showToast('Produto criado com sucesso');
                 await loadProducts();

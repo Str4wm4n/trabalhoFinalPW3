@@ -128,4 +128,20 @@ class ProdutoCatalog
 
         return $novoProduto;
     }
+
+    public function removerProduto(int $id): bool
+    {
+        $produtos = $this->getProdutosFromJson();
+        $antes = count($produtos);
+
+        $produtos = array_values(array_filter($produtos, static function ($produto) use ($id) {
+            return (int) ($produto['id'] ?? 0) !== $id;
+        }));
+
+        if (count($produtos) === $antes) {
+            return false;
+        }
+
+        return $this->salvarProdutos($produtos);
+    }
 }
