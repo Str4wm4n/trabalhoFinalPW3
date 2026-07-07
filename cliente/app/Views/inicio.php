@@ -145,9 +145,9 @@
             <p class="lead">Escolha um produto, monte o carrinho e finalize em poucos cliques.</p>
 
             <div class="totem-box">
-                <label>Totem deste navegador</label>
+                <label>Totem do próximo pedido</label>
                 <div id="totemValue" class="totem-value">Gerando...</div>
-                <div class="totem-help">Cada navegador recebe um totem próprio. A janela normal e a anônima ficam com totems diferentes.</div>
+                <div class="totem-help">Cada novo pedido recebe um totem novo, sem depender de aba normal ou anônima.</div>
             </div>
             <button class="btn" id="startOrderBtn" type="button">Iniciar pedido</button>
         </div>
@@ -158,18 +158,11 @@
         const totemValue = document.getElementById('totemValue');
         const startOrderBtn = document.getElementById('startOrderBtn');
 
-        function getOrCreateTotemNumero() {
-            const salvo = Number(localStorage.getItem(totemKey) || 0);
-            if (Number.isInteger(salvo) && salvo > 0) {
-                return salvo;
-            }
-
-            const novoTotem = Math.floor(1000 + Math.random() * 9000);
-            localStorage.setItem(totemKey, String(novoTotem));
-            return novoTotem;
+        function createTotemNumero() {
+            return Math.floor(1000 + Math.random() * 9000);
         }
 
-        const totemNumero = getOrCreateTotemNumero();
+        const totemNumero = createTotemNumero();
         totemValue.textContent = `Totem ${totemNumero}`;
 
         startOrderBtn.addEventListener('click', () => {

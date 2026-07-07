@@ -38,6 +38,7 @@
     <script>
         const lastOrderKey = 'pedidoLastOrder';
         const cartKey = 'pedidoCart';
+        const totemKey = 'pedidoTotem';
 
         function getLastOrder() {
             try {
@@ -50,6 +51,7 @@
         function startNewOrder() {
             localStorage.removeItem(lastOrderKey);
             localStorage.removeItem(cartKey);
+            localStorage.removeItem(totemKey);
             window.location.href = '<?= site_url('produtos') ?>';
         }
 
